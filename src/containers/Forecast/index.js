@@ -9,6 +9,7 @@ const API_KEY = "768a35a09a1701be84498950a95e7cf5";
 class Forecast extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
       forecast: null
     };
@@ -19,7 +20,6 @@ class Forecast extends Component {
     axios
       .get(`${API_URL}?q=${city}&appid=${API_KEY}&units=metric`)
       .then(({ data }) => {
-        console.log(data);
         // Recupere uniquement la propriété data
         const { list } = data;
         // On prend les trois premières heures de chaque jour (donc de 0-3h))
@@ -36,13 +36,12 @@ class Forecast extends Component {
     this.callAPI(city);
   }
 
-  // A chaque update relance une api
-  componentDidUpdate(nextProps) {
-    // Ici on verifie que la mise à jour concerne bien le champs city
-    if (nextProps.city !== this.props.city) {
-      this.callAPI(nextProps.city);
-    }
-  }
+  // Fonction appelé lors du click sur le bouton
+  // Appel la fonction recu en paramètre de App
+  removeCity = () => {
+    const { removeCity, city } = this.props;
+    removeCity(city);
+  };
 
   render() {
     const { forecast } = this.state;
@@ -51,16 +50,15 @@ class Forecast extends Component {
     return (
       <div>
         <h2 className="forecast-header">{city}</h2>
+        <div className="remove-btn-container">
+          <button type="button" onClick={this.removeCity}>
+            Enlever cette ville
+          </button>
+        </div>
         <div className="forecast-container">
-          {/* render tout le tableau */}
           {forecast.map((forecastData, index) => {
             return <Day key={index} data={forecastData} />;
           })}
-          {/* <Day data={forecast[0]}/>
-          <Day data={forecast[1]}/>
-          <Day data={forecast[2]}/>
-          <Day data={forecast[3]}/>
-          <Day data={forecast[4]}/> */}
         </div>
       </div>
     );

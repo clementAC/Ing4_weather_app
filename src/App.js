@@ -1,29 +1,50 @@
 import React, { Component } from "react";
-import Forecast from "./containers/Forecast";
+import ForeCast from "./containers/Forecast";
 
 class App extends Component {
   state = {
-    city: "Paris"
+    cities: [],
+    inputValue: ""
   };
 
-  handleChange = event => {
-    this.setState({ city: event.target.value });
+  handleChange(event) {
+    this.setState({ inputValue: event.target.value });
+  }
+
+  addCity = () => {
+    const { inputValue, cities } = this.state;
+    this.setState({ cities: [...cities, inputValue] });
+  };
+
+  removeCity = cityName => {
+    const { cities } = this.state;
+    const newCities = cities.filter(city => {
+      return city !== cityName;
+    });
+    this.setState({ cities: newCities });
+  };
+
+  renderCity = (city, index) => {
+    return <ForeCast key={index} city={city} removeCity={this.removeCity} />;
   };
 
   render() {
-    const { city } = this.state;
+    const { inputValue, cities } = this.state;
     return (
       <div className="App">
-        <h2> Ma super station météo</h2>
+        <h2>Ma super station météo</h2>
 
         <input
           type="text"
           name="Ville"
-          value={city}
-          onChange={this.handleChange}
+          value={inputValue}
+          onChange={this.handleChange.bind(this)}
         />
+        <button type="button" onClick={this.addCity}>
+          Ajouter ville
+        </button>
 
-        <Forecast city={city} />
+        {cities.map(this.renderCity)}
       </div>
     );
   }
