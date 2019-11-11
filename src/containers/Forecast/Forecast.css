@@ -1,0 +1,8 @@
+.forecast-header {
+  text-align: center;
+}
+
+.forecast-container {
+  display: flex;
+  justify-content: center;
+}
